@@ -10,7 +10,9 @@
 
 		timerButton.disabled = true;
 
-		rollButton.addEventListener('click', function() {
+		rollButton.addEventListener('click', function(event) {
+			event.preventDefault();
+
 			var alphabet = 'abcdefghijklmnopqrstuvwxyz';
 			var randomNumber = Math.floor(Math.random() * alphabet.length);
 
@@ -20,9 +22,11 @@
 			timerButton.disabled = false;
 		});
 
-		timerButton.addEventListener('click', function() {
+		timerButton.addEventListener('click', function(event) {
+			event.preventDefault();
+
 			var timerCount = 120;
-			
+
 			var timer = setInterval(function() {
 				timerCount -= 1;
 
