@@ -1,6 +1,6 @@
 (function() {
 	'use strict';
 
-	console.log('Client-side script');
+	console.log('This is your console ;) ');
 
 })();
