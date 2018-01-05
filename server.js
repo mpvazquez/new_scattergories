@@ -3,9 +3,18 @@
 
 	var express = require('express');
 
+	var CATEGORY_LIST = require('./db/category-lists.json');
+
 	var PORT = process.env.PORT || 8080;
 
 	var app = express();
+
+	function getCategory(req, res) {
+		var randomNumber = Math.floor(Math.random() * CATEGORY_LIST.data.length);
+		var list = CATEGORY_LIST.data[randomNumber];
+
+		res.json(list);
+	}
 
 	function renderGame(req, res) {
 		res.render('game.ejs', {});
@@ -19,6 +28,7 @@
 
 	app.get('/', renderIndex);
 	app.get('/game', renderGame);
+	app.get('/get-category', getCategory);
 	app.get('/*', function(req, res) {
 	  res.status(404).render('404.ejs');
 	});
