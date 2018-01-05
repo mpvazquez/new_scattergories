@@ -4,19 +4,19 @@
 	var gameLetter;
 
 	document.addEventListener("DOMContentLoaded", function() {
-		var gameLetterContainer = document.getElementById('game-letter');
-		var rollDieButton = document.getElementById('roll-die-button');
+		var letterContainer = document.getElementById('game-letter');
+		var rollButton = document.getElementById('roll-die-button');
 		var timerButton = document.getElementById('timer-button');
 
 		timerButton.disabled = true;
 
-		rollDieButton.addEventListener('click', function() {
+		rollButton.addEventListener('click', function() {
 			var alphabet = 'abcdefghijklmnopqrstuvwxyz';
 			var randomNumber = Math.floor(Math.random() * alphabet.length);
 
 			gameLetter = alphabet.charAt(randomNumber);
-			gameLetterContainer.appendChild(document.createTextNode(gameLetter));
-			rollDieButton.disabled = true;
+			letterContainer.appendChild(document.createTextNode(gameLetter));
+			rollButton.disabled = true;
 			timerButton.disabled = false;
 		});
 
