@@ -7,15 +7,18 @@
 
 	var app = express();
 
-	function render(req, res) {
-		console.log('page should render!');
+	function renderGame(req, res) {
+		res.render('game.ejs', {});
+	}
 
-		res.send('RENDER');
+	function renderIndex(req, res) {
+		res.render('index.ejs', {});
 	}
 
 	app.use(express.static('public'));
 
-	app.get('/', render);
+	app.get('/', renderIndex);
+	app.get('/game', renderGame);
 	app.get('/*', function(req, res) {
 	  res.status(404).render('404.ejs');
 	});
