@@ -59,11 +59,11 @@
 				var value = event.currentTarget.value;
 
 				if (enterKeyCode) {
-					// validate input
-					if (value[0] && value[0].toLowerCase() === gameLetter.toLowerCase() && value.length > 1) {
-						validateInput(event);
-					} else {
+					// initial input validation for minimum characters, and match gameLetter
+					if (!value.length || value[0].toLowerCase() !== gameLetter.toLowerCase() || value.length < 2) {
 						markInputBorder(event.currentTarget, false);
+					} else {
+						validateInput(event);
 					}
 
 					// select next input, if there is one
@@ -75,7 +75,7 @@
 		rollButton.addEventListener('click', function(event) {
 			event.preventDefault();
 
-			var alphabet = 'abcdefghijklmnopqrstuvwxyz';
+			var alphabet = 'abcdefghijklmnopqrstuvwyz';
 			var randomNumber = Math.floor(Math.random() * alphabet.length);
 
 			gameLetter = alphabet.charAt(randomNumber);
@@ -88,6 +88,7 @@
 			event.preventDefault();
 
 			var categoryContainer = document.getElementById('category-container');
+			var firstInput = document.getElementById('category-input-0');
 			var timerCount = 120;
 
 			categoryContainer.classList.remove('blur-text');
@@ -107,6 +108,9 @@
 					toggleInputs(categoryInputs, true);
 				}
 			}, 1000);
+
+			// start game by selecting the first input
+			firstInput.focus();
 		});
 	});
 
