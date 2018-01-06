@@ -18,19 +18,21 @@
 			<a href="/">
 				<h2>Scattergories</h2>
 			</a>
+			<img id="scattergories-logo" src="./images/scattergories-logo.png" alt="Logo">
 		</header>
+
 
 		<section>
 			<span id="game-letter"></span>
 			<button id="roll-die-button">Roll The Die</button>
-			<button id="timer-button">Start Timer</button>
+			<button disabled id="timer-button">Start Timer</button>
 		</section>
 
 		<section class="blur-text" id="category-container">
 			<% categoryList.forEach(function(category, index) {%>
 			<div class="category-item">
 				<label id="category-item-<%= index %>"><%= category %></label>
-				<input disabled placeholder=" Type Here" spellcheck type="text" />
+				<input class="category-input" disabled placeholder=" Type Here" spellcheck type="text" />
 			</div>
 			<% }); %>
 		</section>
