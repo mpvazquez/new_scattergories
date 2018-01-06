@@ -18,6 +18,10 @@
 		return CATEGORY_LIST.data[randomIndex];
 	}
 
+	function getScore(req, res) {
+		
+	}
+
 	function renderGame(req, res) {
 		res.render('game.ejs', {
 			categoryList: getCategory()
@@ -40,7 +44,7 @@
 
 	app.get('/', renderWelcome);
 	app.get('/game', renderGame);
-	// app.get('/get-category', getCategory);
+	app.get('/get-score', getScore);
 	app.get('/validate/:input', validate);
 	app.get('/*', function(req, res) {
 	  res.status(404).render('404.ejs');
