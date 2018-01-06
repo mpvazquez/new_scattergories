@@ -7,6 +7,7 @@
 
 	function markInputBorder(el, isValid) {
 		var color = 'red';
+
 		if (isValid) {
 			color = 'green';
 		}
@@ -68,9 +69,6 @@
 					// select next input, if there is one
 					selectNextInput(event.currentTarget);
 				}
-			});
-			categoryInputs[i].addEventListener('focus', function(event) {
-				// console.log(event);
 			});
 		}
 
