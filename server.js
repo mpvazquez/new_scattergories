@@ -2,6 +2,8 @@
 	'use strict';
 
 	var express = require('express');
+	var request = require('request-promise');
+	var spellChecker = require('spell-checker-js');
 
 	var CATEGORY_LIST = require('./db/category-lists.json');
 
@@ -15,7 +17,6 @@
 	}
 
 	function renderGame(req, res) {
-
 		res.render('game.ejs', {
 			categoryList: getCategory()
 		});
@@ -25,11 +26,18 @@
 		res.render('index.ejs', {});
 	}
 
+	function validate(req, res) {
+		var string = req.query.string;
+
+		spellChecker(string);
+	}
+
 	app.use(express.static('public'));
 
 	app.get('/', renderIndex);
 	app.get('/game', renderGame);
-	app.get('/get-category', getCategory);
+	// app.get('/get-category', getCategory);
+	app.get('/validate', validate);
 	app.get('/*', function(req, res) {
 	  res.status(404).render('404.ejs');
 	});
