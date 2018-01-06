@@ -9,15 +9,16 @@
 
 	var app = express();
 
-	function getCategory(req, res) {
+	function getCategory() {
 		var randomNumber = Math.floor(Math.random() * CATEGORY_LIST.data.length);
-		var list = CATEGORY_LIST.data[randomNumber];
-
-		res.json(list);
+		return CATEGORY_LIST.data[randomNumber];
 	}
 
 	function renderGame(req, res) {
-		res.render('game.ejs', {});
+
+		res.render('game.ejs', {
+			categoryList: getCategory()
+		});
 	}
 
 	function renderIndex(req, res) {
