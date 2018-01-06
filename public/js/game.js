@@ -3,12 +3,18 @@
 
 	var gameLetter;
 
+	function toggleInput(boolean) {
+		var categoryInputs = document.getElementsByClassName('category-input');
+
+		for (var i = 0; i < categoryInputs.length; i++) {
+			categoryInputs[i].disabled = boolean;
+		}
+	}
+
 	document.addEventListener("DOMContentLoaded", function() {
 		var letterContainer = document.getElementById('game-letter');
 		var rollButton = document.getElementById('roll-die-button');
 		var timerButton = document.getElementById('timer-button');
-
-		timerButton.disabled = true;
 
 		rollButton.addEventListener('click', function(event) {
 			event.preventDefault();
@@ -30,6 +36,8 @@
 
 			categoryContainer.classList.remove('blur-text');
 
+			toggleInput(false);
+
 			var timer = setInterval(function() {
 				timerCount -= 1;
 
@@ -39,6 +47,8 @@
 					timerButton.textContent = 'Expired!';
 					timerButton.disabled = true;
 					clearInterval(timer);
+
+					toggleInput(true);
 				}
 			}, 1000);
 		});
