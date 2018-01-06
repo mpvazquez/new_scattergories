@@ -3,7 +3,8 @@
 		"ejs": "^2.5.7",
 		"express": "^4.16.2",
 		"request": "^2.83.0",
-		"request-promise": "^4.2.2"
+		"request-promise": "^4.2.2",
+		"spell-checker-js": "^1.2.3"
 	},
 	"scripts": {
 		"start": "npm install && node server.js"
