@@ -10,6 +10,20 @@ body {
 
 button {
 	cursor: pointer;
+    color: #000000;
+    font-family: 'Cinzel', serif;
+    font-size: 1rem;
+    font-weight: bold;
+    padding: .8rem;
+    -webkit-border-radius: 25px;
+    -moz-border-radius: 25px;
+    border-radius: 1rem;
+    background: #efb42b;
+    background: -moz-linear-gradient(90deg, #efb42b 30%, #ffe121 70%);
+    background: -webkit-linear-gradient(90deg, #efb42b 30%, #ffe121 70%);
+    background: -o-linear-gradient(90deg, #efb42b 30%, #ffe121 70%);
+    background: -ms-linear-gradient(90deg, #efb42b 30%, #ffe121 70%);
+    background: linear-gradient(0deg, #efb42b 30%, #ffe121 70%);
 }
 
 footer {
@@ -46,7 +60,7 @@ h2 {
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
     border-radius: 5px;
-    min-width: 5px;
+    min-width: 5rem;
 }
 
 .blur-text > .category-item > label {
