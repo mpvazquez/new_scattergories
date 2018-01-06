@@ -3,34 +3,6 @@
 
 	var gameLetter;
 
-	function renderCategoryList(data) {
-		try {
-			var json = JSON.parse(data);
-
-			json.forEach(function(listItem, index) {
-				var label = document.getElementById('category-item-' + index);
-
-				label.textContent = listItem;
-			});
-		} catch (error) {
-			console.error(error);
-		}
-	}
-
-	function fetchCategoryList() {
-		var xhr = new XMLHttpRequest();
-		var url = '/get-category';
-
-		xhr.open('GET', url, true);
-		xhr.responseType = 'text';
-		xhr.onreadystatechange = function() {
-			if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-				renderCategoryList(xhr.responseText);
-			}
-		}
-		xhr.send();
-	}
-
 	document.addEventListener("DOMContentLoaded", function() {
 		var letterContainer = document.getElementById('game-letter');
 		var rollButton = document.getElementById('roll-die-button');
@@ -40,13 +12,12 @@
 
 		rollButton.addEventListener('click', function(event) {
 			event.preventDefault();
-			fetchCategoryList();
 
 			var alphabet = 'abcdefghijklmnopqrstuvwxyz';
 			var randomNumber = Math.floor(Math.random() * alphabet.length);
 
 			gameLetter = alphabet.charAt(randomNumber);
-			letterContainer.appendChild(document.createTextNode(gameLetter));
+			letterContainer.appendChild(document.createTextNode(gameLetter.toUpperCase()));
 			rollButton.disabled = true;
 			timerButton.disabled = false;
 		});

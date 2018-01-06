@@ -27,54 +27,12 @@
 		</section>
 
 		<section class="blur-text" id="category-container">
+			<% categoryList.forEach(function(category, index) {%>
 			<div class="category-item">
-				<label id="category-item-0"></label>
-				<input placeholder=" Type Here" spellcheck type="text" />
+				<label id="category-item-<%= index %>"><%= category %></label>
+				<input disabled placeholder=" Type Here" spellcheck type="text" />
 			</div>
-			<div class="category-item">
-				<label id="category-item-1"></label>
-				<input placeholder=" Type Here" spellcheck type="text" />
-			</div>
-			<div class="category-item">
-				<label id="category-item-2"></label>
-				<input placeholder=" Type Here" spellcheck type="text" />
-			</div>
-			<div class="category-item">
-				<label id="category-item-3"></label>
-				<input placeholder=" Type Here" spellcheck type="text" />
-			</div>
-			<div class="category-item">
-				<label id="category-item-4"></label>
-				<input placeholder=" Type Here" spellcheck type="text" />
-			</div>
-			<div class="category-item">
-				<label id="category-item-5"></label>
-				<input placeholder=" Type Here" spellcheck type="text" />
-			</div>
-			<div class="category-item">
-				<label id="category-item-6"></label>
-				<input placeholder=" Type Here" spellcheck type="text" />
-			</div>
-			<div class="category-item">
-				<label id="category-item-7"></label>
-				<input placeholder=" Type Here" spellcheck type="text" />
-			</div>
-			<div class="category-item">
-				<label id="category-item-8"></label>
-				<input placeholder=" Type Here" spellcheck type="text" />
-			</div>
-			<div class="category-item">
-				<label id="category-item-9"></label>
-				<input placeholder=" Type Here" spellcheck type="text" />
-			</div>
-			<div class="category-item">
-				<label id="category-item-10"></label>
-				<input placeholder=" Type Here" spellcheck type="text" />
-			</div>
-			<div class="category-item">
-				<label id="category-item-11"></label>
-				<input placeholder=" Type Here" spellcheck type="text" />
-			</div>
+			<% }); %>
 		</section>
 
 		<footer>
