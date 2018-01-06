@@ -3,13 +3,14 @@
 
 	var express = require('express');
 	var request = require('request-promise');
-	var spellChecker = require('spell-checker-js');
+	var spell = require('spell-checker-js');
 
 	var CATEGORY_LIST = require('./db/category-lists.json');
 
 	var PORT = process.env.PORT || 8080;
 
 	var app = express();
+	spell.load('en');
 
 	function getCategory() {
 		var randomNumber = Math.floor(Math.random() * CATEGORY_LIST.data.length);
@@ -27,9 +28,11 @@
 	}
 
 	function validate(req, res) {
-		var string = req.query.string;
+		var input = req.params.input;
 
-		spellChecker(string);
+		res.json({
+			data: spell.check(input)
+		});
 	}
 
 	app.use(express.static('public'));
@@ -37,7 +40,7 @@
 	app.get('/', renderIndex);
 	app.get('/game', renderGame);
 	// app.get('/get-category', getCategory);
-	app.get('/validate', validate);
+	app.get('/validate/:input', validate);
 	app.get('/*', function(req, res) {
 	  res.status(404).render('404.ejs');
 	});
