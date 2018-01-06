@@ -4,6 +4,7 @@ a {
 
 body {
 	background-image: url('../images/background.png');
+	position: relative;
 	text-align: center;
 }
 
@@ -26,7 +27,8 @@ header {
     -webkit-box-shadow: 0px 2px 5px 0px rgba(50, 50, 50, 0.75);
 	-moz-box-shadow: 0px 2px 5px 0px rgba(50, 50, 50, 0.75);
 	margin-bottom: 2rem;
-	padding: 1rem;
+	position: fixed;
+    width: 100%;
 }
 
 h2 {
@@ -34,6 +36,17 @@ h2 {
 	font-family: 'Cinzel', serif;
 	font-size: 2rem;
 	margin: 0;
+	padding: 1rem;
+}
+
+#game-timer-container,
+.active-game-letter > #game-letter {
+	background: #ffffff;
+    padding: 3px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    min-width: 5px;
 }
 
 .blur-text > .category-item > label {
@@ -53,6 +66,28 @@ h2 {
 
 .category-item > input {
 	width: 49%
+}
+
+#game-details-container {
+	position: absolute;
+    right: 1.5rem;
+    top: 1.5rem;
+}
+
+#game-letter {
+	display: inline-block;
+}
+
+#game-setup-section {
+	padding-top: 6rem;
+}
+
+#game-timer {
+	display: inline-block;
+}
+
+#game-timer-container {
+	display: inline-block;
 }
 
 #scattergories-logo {

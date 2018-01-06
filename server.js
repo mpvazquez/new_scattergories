@@ -10,11 +10,12 @@
 	var PORT = process.env.PORT || 8080;
 
 	var app = express();
+
 	spell.load('en');
 
 	function getCategory() {
-		var randomNumber = Math.floor(Math.random() * CATEGORY_LIST.data.length);
-		return CATEGORY_LIST.data[randomNumber];
+		var randomIndex = Math.floor(Math.random() * CATEGORY_LIST.data.length);
+		return CATEGORY_LIST.data[randomIndex];
 	}
 
 	function renderGame(req, res) {
@@ -23,7 +24,7 @@
 		});
 	}
 
-	function renderIndex(req, res) {
+	function renderWelcome(req, res) {
 		res.render('index.ejs', {});
 	}
 
@@ -37,7 +38,7 @@
 
 	app.use(express.static('public'));
 
-	app.get('/', renderIndex);
+	app.get('/', renderWelcome);
 	app.get('/game', renderGame);
 	// app.get('/get-category', getCategory);
 	app.get('/validate/:input', validate);

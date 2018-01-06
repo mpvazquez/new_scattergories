@@ -20,11 +20,14 @@
 				<h2>Scattergories</h2>
 			</a>
 			<img id="scattergories-logo" src="./images/scattergories-logo.png" alt="Logo">
+			<div id="game-details-container">
+				<div id="game-letter"></div>
+				<div id="game-timer-container">Timer: <span id="game-timer">120</span></div>
+			</div>
 		</header>
 
 
-		<section>
-			<span id="game-letter"></span>
+		<section id="game-setup-section">
 			<button id="roll-die-button">Roll The Die</button>
 			<button disabled id="timer-button">Start Timer</button>
 		</section>
@@ -33,7 +36,7 @@
 			<% categoryList.forEach(function(category, index) {%>
 			<div class="category-item">
 				<label id="category-item-<%= index %>"><%= category %></label>
-				<input class="category-input" id="category-input-<%= index %>" disabled placeholder=" Type Here" spellcheck="true" type="text" />
+				<input class="category-input" id="category-input-<%= index %>" disabled placeholder=" Answer Here" spellcheck="true" type="text" />
 			</div>
 			<% }); %>
 		</section>

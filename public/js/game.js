@@ -3,7 +3,14 @@
 
 	var xhr = new XMLHttpRequest();
 
+	var answerList = [];
 	var gameLetter;
+
+	function endGame() {
+		var message = 'Congrats! You have completed ' + answerList.length + ' out of 12 fields!';
+
+		console.log(message);
+	}
 
 	function markInputBorder(el, isValid) {
 		var color = 'red';
@@ -11,6 +18,7 @@
 		if (isValid) {
 			color = 'green';
 		}
+
 		el.style['border-color'] = color;
 	}
 
@@ -77,9 +85,15 @@
 
 			var alphabet = 'abcdefghijklmnopqrstuvwyz';
 			var randomNumber = Math.floor(Math.random() * alphabet.length);
+			var gameDetailsContainer = document.getElementById('game-details-container');
 
 			gameLetter = alphabet.charAt(randomNumber);
-			letterContainer.appendChild(document.createTextNode(gameLetter.toUpperCase()));
+
+			var gameLetterMessage = 'Letter: ' + gameLetter.toUpperCase();
+
+			gameDetailsContainer.classList.add('active-game-letter');
+
+			letterContainer.appendChild(document.createTextNode(gameLetterMessage));
 			rollButton.disabled = true;
 			timerButton.disabled = false;
 		});
@@ -88,6 +102,7 @@
 			event.preventDefault();
 
 			var categoryContainer = document.getElementById('category-container');
+			var gameTimer = document.getElementById('game-timer');
 			var firstInput = document.getElementById('category-input-0');
 			var timerCount = 120;
 
@@ -96,16 +111,18 @@
 			toggleInputs(categoryInputs, false);
 
 			var timer = setInterval(function() {
+				var gameTimerContainer = document.getElementById('game-timer-container');
 				timerCount -= 1;
 
-				timerButton.textContent = timerCount;
+				gameTimer.textContent = timerCount;
+				timerButton.disabled = true;
 
-				if (timerCount < 0) {
-					timerButton.textContent = 'Expired!';
-					timerButton.disabled = true;
+				if (timerCount === 0) {
 					clearInterval(timer);
 
 					toggleInputs(categoryInputs, true);
+
+					endGame();
 				}
 			}, 1000);
 
