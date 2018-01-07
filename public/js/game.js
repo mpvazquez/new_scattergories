@@ -87,7 +87,8 @@
 			var score = sessionStorage.getItem('score') || '0';
 
 			if (round === 1) {
-				score = 0;
+				sessionStorage.setItem('score', '0');
+				score = '0';
 			}
 
 			gameScore.textContent = score;
