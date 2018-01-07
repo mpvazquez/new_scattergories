@@ -22,6 +22,7 @@
 			</a>
 			<img id="scattergories-logo" src="/images/scattergories-logo.png" alt="Logo">
 			<div id="game-details-container">
+				<div data-round="<%= round %>" id="game-round">Round: <%= round %></div>
 				<div id="game-letter"></div>
 				<div id="game-timer-container">Timer: <span id="game-timer">120</span></div>
 			</div>
@@ -38,7 +39,7 @@
 			<% categoryList.forEach(function(category, index) {%>
 			<div class="category-item">
 				<label id="category-item-<%= index %>"><%= category %></label>
-				<input class="category-input" id="category-input-<%= index %>" disabled placeholder=" Answer Here" spellcheck="true" type="text" />
+				<input class="category-input" data-category="<%= index %>" id="category-input-<%= index %>" disabled placeholder=" Answer Here" spellcheck="true" type="text" />
 			</div>
 			<% }); %>
 		</section>

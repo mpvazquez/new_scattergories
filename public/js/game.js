@@ -36,12 +36,11 @@
 	}
 
 	function selectNextInput(el) {
-		var nextId = Number(el.id.slice(15, el.id.length)) + 1;
+		var nextId = Number(el.dataset.category) + 1;
 		var idSelector = 'category-input-' + nextId;
 
 		if (nextId < 12) {
-			var nextInput = document.getElementById(idSelector);
-			nextInput.focus();
+			document.getElementById(idSelector).focus();
 		}
 
 	}
