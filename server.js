@@ -19,12 +19,13 @@
 	}
 
 	function getScore(req, res) {
-		
+
 	}
 
 	function renderGame(req, res) {
 		res.render('game.ejs', {
-			categoryList: getCategory()
+			categoryList: getCategory(),
+			round: req.params.round
 		});
 	}
 
@@ -43,7 +44,7 @@
 	app.use(express.static('public'));
 
 	app.get('/', renderWelcome);
-	app.get('/game', renderGame);
+	app.get('/game/:round', renderGame);
 	app.get('/get-score', getScore);
 	app.get('/validate/:input', validate);
 	app.get('/*', function(req, res) {
