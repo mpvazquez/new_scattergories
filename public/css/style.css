@@ -54,8 +54,9 @@ h2 {
 	padding: 1rem;
 }
 
+.active-game-letter > #game-letter,
 #game-timer-container,
-.active-game-letter > #game-letter {
+#game-round {
 	background: #ffffff;
     padding: 3px;
     -webkit-border-radius: 5px;
@@ -89,7 +90,9 @@ h2 {
     top: 1.5rem;
 }
 
-#game-letter {
+#game-letter,
+#game-round,
+#game-timer-container {
 	display: inline-block;
 }
 
@@ -106,22 +109,14 @@ h2 {
 }
 
 #game-setup-section {
-	padding-top: 6rem;
+    padding-top: 6rem;
 }
 
 #game-setup-section > div > #scattergories-logo {
     left: auto;
-	position: relative;
+    position: relative;
     top: auto;
     width: inherit;
-}
-
-#game-timer {
-	display: inline-block;
-}
-
-#game-timer-container {
-	display: inline-block;
 }
 
 #index-footer {
