@@ -7,9 +7,11 @@
 	var gameLetter;
 
 	function endGame() {
-		var message = 'Congrats! You have completed ' + answerList.length + ' out of 12 fields!';
+		var message = 'Congrats! You scored ' + answerList.length + ' out of 12!';
+		var gameMessageNode = document.getElementById('game-message');
 
-		console.log(message);
+		gameMessageNode.classList = 'active';
+		gameMessageNode.textContent = message;
 	}
 
 	function markInputBorder(el, isValid) {
@@ -20,6 +22,17 @@
 		}
 
 		el.style['border-color'] = color;
+	}
+
+	function runLocalValidation(event) {
+		var value = event.currentTarget.value;
+
+		// initial input validation for minimum characters, and match gameLetter
+		if (!value.length || value[0].toLowerCase() !== gameLetter.toLowerCase() || value.length < 2) {
+			markInputBorder(event.currentTarget, false);
+		} else {
+			validateInput(event);
+		}
 	}
 
 	function selectNextInput(el) {
@@ -41,7 +54,8 @@
 
 	function validateInput(event) {
 		var domEl = event.currentTarget;
-		var url = '/validate/' + event.currentTarget.value;
+		var value = event.currentTarget.value;
+		var url = '/validate/' + value;
 
 		xhr.open('GET', url, true);
 		xhr.responseType = 'text';
@@ -50,6 +64,10 @@
 				var data = JSON.parse(xhr.responseText).data;
 
 				markInputBorder(domEl, !data.length);
+
+				if (!data.length && !answerList.includes(value)) {
+					answerList.push(value)
+				}
 			}
 		}
 		xhr.send();
@@ -67,23 +85,22 @@
 				var value = event.currentTarget.value;
 
 				if (enterKeyCode) {
-					// initial input validation for minimum characters, and match gameLetter
-					if (!value.length || value[0].toLowerCase() !== gameLetter.toLowerCase() || value.length < 2) {
-						markInputBorder(event.currentTarget, false);
-					} else {
-						validateInput(event);
-					}
+					runLocalValidation(event);
 
 					// select next input, if there is one
 					selectNextInput(event.currentTarget);
 				}
 			});
+
+			categoryInputs[i].addEventListener('blur', function(event) {
+				runLocalValidation(event);
+			})
 		}
 
 		rollButton.addEventListener('click', function(event) {
 			event.preventDefault();
 
-			var alphabet = 'abcdefghijklmnopqrstuvwyz';
+			var alphabet = 'abcdefghijklmnopqrstuvwxyz';
 			var randomNumber = Math.floor(Math.random() * alphabet.length);
 			var gameDetailsContainer = document.getElementById('game-details-container');
 
