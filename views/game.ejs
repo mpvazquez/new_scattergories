@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<link rel="shortcut icon" href="/images/favicon.ico">
 		<link href="https://fonts.googleapis.com/css?family=Cinzel" rel="stylesheet">
 		<link rel="stylesheet" href="/css/normalize.css"/>
 		<link rel="stylesheet" href="/css/style.css" />
@@ -19,7 +20,7 @@
 			<a href="/">
 				<h2>Scattergories</h2>
 			</a>
-			<img id="scattergories-logo" src="./images/scattergories-logo.png" alt="Logo">
+			<img id="scattergories-logo" src="/images/scattergories-logo.png" alt="Logo">
 			<div id="game-details-container">
 				<div id="game-letter"></div>
 				<div id="game-timer-container">Timer: <span id="game-timer">120</span></div>
@@ -33,6 +34,7 @@
 		</section>
 
 		<section class="blur-text" id="category-container">
+			<div id="game-message"></div>
 			<% categoryList.forEach(function(category, index) {%>
 			<div class="category-item">
 				<label id="category-item-<%= index %>"><%= category %></label>
