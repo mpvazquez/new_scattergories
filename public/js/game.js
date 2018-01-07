@@ -4,8 +4,28 @@
 	var xhr = new XMLHttpRequest();
 
 	var answerList = [];
-	var gameLetter;
+	var gameLetter = null;
 	var round = null;
+
+	function checkSpelling(el) {
+		var value = el.value;
+		var url = '/validate/' + value;
+
+		xhr.open('GET', url, true);
+		xhr.responseType = 'text';
+		xhr.onreadystatechange = function() {
+			if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+				var data = JSON.parse(xhr.responseText).data;
+
+				markInputBorder(el, !data.length);
+
+				if (!data.length && !answerList.includes(value)) {
+					answerList.push(value)
+				}
+			}
+		}
+		xhr.send();
+	}
 
 	function endGame() {
 		var gameMessageNode = document.getElementById('game-message');
@@ -50,17 +70,6 @@
 		el.style['border-color'] = color;
 	}
 
-	function runLocalValidation(event) {
-		var value = event.currentTarget.value;
-
-		// initial input validation for minimum characters, and match gameLetter
-		if (!value.length || value[0].toLowerCase() !== gameLetter.toLowerCase() || value.length < 2) {
-			markInputBorder(event.currentTarget, false);
-		} else {
-			validateInput(event);
-		}
-	}
-
 	function selectNextInput(el) {
 		var nextId = Number(el.dataset.category) + 1;
 		var idSelector = 'category-input-' + nextId;
@@ -68,37 +77,9 @@
 		if (nextId < 12) {
 			document.getElementById(idSelector).focus();
 		}
-
 	}
 
-	function toggleInputs(inputs, boolean) {
-		for (var i = 0; i < inputs.length; i++) {
-			inputs[i].disabled = boolean;
-		}
-	}
-
-	function validateInput(event) {
-		var domEl = event.currentTarget;
-		var value = event.currentTarget.value;
-		var url = '/validate/' + value;
-
-		xhr.open('GET', url, true);
-		xhr.responseType = 'text';
-		xhr.onreadystatechange = function() {
-			if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-				var data = JSON.parse(xhr.responseText).data;
-
-				markInputBorder(domEl, !data.length);
-
-				if (!data.length && !answerList.includes(value)) {
-					answerList.push(value)
-				}
-			}
-		}
-		xhr.send();
-	}
-
-	document.addEventListener("DOMContentLoaded", function() {
+	function startGame() {
 		var categoryInputs = document.getElementsByClassName('category-input');
 		var gameScore = document.getElementById('game-score');
 		var letterContainer = document.getElementById('game-letter');
@@ -124,10 +105,9 @@
 		for (var i = 0; i < categoryInputs.length; i++) {
 			categoryInputs[i].addEventListener('keydown', function(event) {
 				var enterKeyCode = event.keyCode === 13;
-				var value = event.currentTarget.value;
 
 				if (enterKeyCode) {
-					runLocalValidation(event);
+					validateInput(event.currentTarget);
 
 					// select next input, if there is one
 					selectNextInput(event.currentTarget);
@@ -135,7 +115,7 @@
 			});
 
 			categoryInputs[i].addEventListener('blur', function(event) {
-				runLocalValidation(event);
+				validateInput(event.currentTarget);
 			})
 		}
 
@@ -187,6 +167,25 @@
 			// start game by selecting the first input
 			firstInput.focus();
 		});
-	});
+	}
+
+	function toggleInputs(inputs, boolean) {
+		for (var i = 0; i < inputs.length; i++) {
+			inputs[i].disabled = boolean;
+		}
+	}
+
+	function validateInput(el) {
+		var isGameLetter = el.value && el.value[0].toLowerCase() === gameLetter.toLowerCase();
+		var isValidLength = el.value.length > 1;
+
+		if (!isGameLetter || !isValidLength) {
+			markInputBorder(el, false);
+		} else {
+			checkSpelling(el);
+		}
+	}
+
+	document.addEventListener("DOMContentLoaded", startGame);
 
 })();
