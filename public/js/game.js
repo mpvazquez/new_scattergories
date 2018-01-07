@@ -1,6 +1,7 @@
 (function() {
 	'use strict';
 
+	var activeReturnKey = false;
 	var answerList = [];
 	var gameLetter = null;
 	var round = null;
@@ -97,20 +98,24 @@
 		}
 
 		for (var i = 0; i < inputs.length; i++) {
+			inputs[i].addEventListener('blur', function(event) {
+				if (!activeReturnKey) {
+					validateValue(event.currentTarget);
+				}
+			});
+
 			inputs[i].addEventListener('keydown', function(event) {
 				var enterKeyCode = event.keyCode === 13;
 
 				if (enterKeyCode) {
+					activeReturnKey = !activeReturnKey;
 					validateValue(event.currentTarget);
 
 					// select next input, if there is one
 					selectNextInput(event.currentTarget);
+					activeReturnKey = !activeReturnKey;
 				}
 			});
-
-			inputs[i].addEventListener('blur', function(event) {
-				validateValue(event.currentTarget);
-			})
 		}
 
 		rollButton.addEventListener('click', startRoll);
