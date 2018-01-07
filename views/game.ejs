@@ -21,8 +21,11 @@
 				<h2>Scattergories</h2>
 			</a>
 			<img id="scattergories-logo" src="/images/scattergories-logo.png" alt="Logo">
-			<div id="game-details-container">
+			<div id="game-details-container-left">
 				<div data-round="<%= round %>" id="game-round">Round: <%= round %></div>
+				<div id="game-score-container">Score: <span id="game-score">0</span></div>
+			</div>
+			<div id="game-details-container-right">
 				<div id="game-letter"></div>
 				<div id="game-timer-container">Timer: <span id="game-timer">120</span></div>
 			</div>
@@ -35,7 +38,14 @@
 		</section>
 
 		<section class="blur-text" id="category-container">
-			<div id="game-message"></div>
+			<div id="game-message">
+				<div>Congrats! You scored <span id="round-score">0</span> points this round!</div>
+				<hr />
+				<div>Total Score: <span id="total-score"></span></div>
+				<a id="next-round-link" href="/game/1">
+					<button id="next-round-button">Next Round</button>
+				</a>
+			</div>
 			<% categoryList.forEach(function(category, index) {%>
 			<div class="category-item">
 				<label id="category-item-<%= index %>"><%= category %></label>
