@@ -1,14 +1,18 @@
 (function() {
 	'use strict';
 
-	var xhr = new XMLHttpRequest();
-
 	var answerList = [];
 	var gameLetter = null;
 	var round = null;
 
+	var inputs;
+	var rollButton;
+	var timerButton;
+
 	function checkSpelling(el) {
-		var value = el.value;
+		var xhr = new XMLHttpRequest();
+
+		var value = el.value.toLowerCase();
 		var url = '/validate/' + value;
 
 		xhr.open('GET', url, true);
@@ -17,9 +21,9 @@
 			if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
 				var data = JSON.parse(xhr.responseText).data;
 
-				markInputBorder(el, !data.length);
+				validateInputEl(el, !data.length);
 
-				if (!data.length && !answerList.includes(value)) {
+				if (!data.length) {
 					answerList.push(value)
 				}
 			}
@@ -60,16 +64,6 @@
 		totalScoreNode.textContent = totalScore;
 	}
 
-	function markInputBorder(el, isValid) {
-		var color = 'red';
-
-		if (isValid) {
-			color = 'green';
-		}
-
-		el.style['border-color'] = color;
-	}
-
 	function selectNextInput(el) {
 		var nextId = Number(el.dataset.category) + 1;
 		var idSelector = 'category-input-' + nextId;
@@ -80,11 +74,11 @@
 	}
 
 	function startGame() {
-		var categoryInputs = document.getElementsByClassName('category-input');
 		var gameScore = document.getElementById('game-score');
-		var letterContainer = document.getElementById('game-letter');
-		var rollButton = document.getElementById('roll-die-button');
-		var timerButton = document.getElementById('timer-button');
+
+		inputs = document.getElementsByClassName('category-input');
+		rollButton = document.getElementById('roll-die-button');
+		timerButton = document.getElementById('timer-button');
 
 		round = Number(document.getElementById('game-round').dataset.round);
 
@@ -102,87 +96,106 @@
 			console.error('Sorry, local web storage is not supported on your browser!');
 		}
 
-		for (var i = 0; i < categoryInputs.length; i++) {
-			categoryInputs[i].addEventListener('keydown', function(event) {
+		for (var i = 0; i < inputs.length; i++) {
+			inputs[i].addEventListener('keydown', function(event) {
 				var enterKeyCode = event.keyCode === 13;
 
 				if (enterKeyCode) {
-					validateInput(event.currentTarget);
+					validateValue(event.currentTarget);
 
 					// select next input, if there is one
 					selectNextInput(event.currentTarget);
 				}
 			});
 
-			categoryInputs[i].addEventListener('blur', function(event) {
-				validateInput(event.currentTarget);
+			inputs[i].addEventListener('blur', function(event) {
+				validateValue(event.currentTarget);
 			})
 		}
 
-		rollButton.addEventListener('click', function(event) {
-			event.preventDefault();
+		rollButton.addEventListener('click', startRoll);
 
-			var alphabet = 'abcdefghijklmnopqrstuvwxyz';
-			var randomNumber = Math.floor(Math.random() * alphabet.length);
-			var gameDetailsRight = document.getElementById('game-details-container-right');
-
-			gameLetter = alphabet.charAt(randomNumber);
-
-			var gameLetterMessage = 'Letter: ' + gameLetter.toUpperCase();
-
-			gameDetailsRight.classList.add('active-game-letter');
-
-			letterContainer.appendChild(document.createTextNode(gameLetterMessage));
-			rollButton.disabled = true;
-			timerButton.disabled = false;
-		});
-
-		timerButton.addEventListener('click', function(event) {
-			event.preventDefault();
-
-			var categoryContainer = document.getElementById('category-container');
-			var firstInput = document.getElementById('category-input-0');
-			var gameTimer = document.getElementById('game-timer');
-			var timerCount = 120;
-
-			categoryContainer.classList.remove('blur-text');
-
-			toggleInputs(categoryInputs, false);
-			timerButton.disabled = true;
-
-			var timer = setInterval(function() {
-				timerCount -= 1;
-
-				gameTimer.textContent = timerCount;
-
-				if (timerCount === 0) {
-					clearInterval(timer);
-
-					toggleInputs(categoryInputs, true);
-
-					endGame();
-				}
-			}, 1000);
-
-			// start game by selecting the first input
-			firstInput.focus();
-		});
+		timerButton.addEventListener('click', startTimer);
 	}
 
-	function toggleInputs(inputs, boolean) {
+	function startRoll(event) {
+		event.preventDefault();
+
+		var alphabet = 'abcdefghijklmnopqrstuvwxyz';
+		var randomNumber = Math.floor(Math.random() * alphabet.length);
+		var gameDetailsRight = document.getElementById('game-details-container-right');
+		var letterContainer = document.getElementById('game-letter');
+
+		gameLetter = alphabet.charAt(randomNumber);
+
+		var gameLetterMessage = 'Letter: ' + gameLetter.toUpperCase();
+
+		gameDetailsRight.classList.add('active-game-letter');
+
+		letterContainer.appendChild(document.createTextNode(gameLetterMessage));
+		rollButton.disabled = true;
+		timerButton.disabled = false;
+	}
+
+	function startTimer(event) {
+		event.preventDefault();
+
+		var categoryContainer = document.getElementById('category-container');
+		var firstInput = document.getElementById('category-input-0');
+		var gameTimer = document.getElementById('game-timer');
+		var timerCount = 120;
+
+		categoryContainer.classList.remove('blur-text');
+
+		toggleInputEls(inputs, false);
+		timerButton.disabled = true;
+
+		var timer = setInterval(function() {
+			timerCount -= 1;
+
+			gameTimer.textContent = timerCount;
+
+			if (timerCount === 0) {
+				clearInterval(timer);
+
+				toggleInputEls(inputs, true);
+
+				endGame();
+			}
+		}, 1000);
+
+		// start game by selecting the first input
+		firstInput.focus();
+	}
+
+	function toggleInputEls(inputs, boolean) {
 		for (var i = 0; i < inputs.length; i++) {
 			inputs[i].disabled = boolean;
 		}
 	}
 
-	function validateInput(el) {
-		var isGameLetter = el.value && el.value[0].toLowerCase() === gameLetter.toLowerCase();
-		var isValidLength = el.value.length > 1;
+	function validateInputEl(el, isValid) {
+		var color = 'red';
 
-		if (!isGameLetter || !isValidLength) {
-			markInputBorder(el, false);
-		} else {
+		if (isValid) {
+			color = 'green';
+		}
+
+		el.style['border-color'] = color;
+	}
+
+	function validateValue(el) {
+		var value = el.value.trim().toLowerCase();
+
+		var isValid = value
+			&& value[0] === gameLetter.toLowerCase()
+			&& !answerList.includes(value)
+			&& value.length > 1;
+
+		if (isValid) {
 			checkSpelling(el);
+		} else {
+			validateInputEl(el, isValid);
 		}
 	}
 
