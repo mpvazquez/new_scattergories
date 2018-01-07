@@ -135,7 +135,7 @@ h2 {
     padding-top: 5rem;
 }
 
-#game-setup-section > div > #scattergories-logo {
+#game-setup-section > div > a > #scattergories-logo {
     left: auto;
     position: relative;
     top: auto;
@@ -162,7 +162,7 @@ h2 {
 #category-container {
 	background-color: #FFFFFF;
 	border: .3rem solid #000000;
-    margin: 2rem auto;
+    margin: .6rem auto;
 	max-width: 40rem;
     position: relative;
 }

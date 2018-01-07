@@ -110,6 +110,10 @@
 		if (typeof Storage !== undefined) {
 			var score = sessionStorage.getItem('score') || '0';
 
+			if (round === 1) {
+				score = 0;
+			}
+
 			gameScore.textContent = score;
 		} else {
 			document.getElementById('game-score-container').remove();
