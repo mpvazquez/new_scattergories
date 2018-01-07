@@ -26,6 +26,12 @@ button {
     background: linear-gradient(0deg, #efb42b 30%, #ffe121 70%);
 }
 
+button[disabled] {
+    background: #eeeeee;
+    color: darkgrey;
+    cursor: initial;
+}
+
 footer {
 	background: rgba(0,0,0,.15);
 	padding: .2rem;
@@ -55,6 +61,7 @@ h2 {
 }
 
 .active-game-letter > #game-letter,
+#game-score-container,
 #game-timer-container,
 #game-round {
 	background: #ffffff;
@@ -84,7 +91,13 @@ h2 {
 	width: 49%
 }
 
-#game-details-container {
+#game-details-container-left {
+    position: absolute;
+    left: 4.5rem;
+    top: 1.5rem;
+}
+
+#game-details-container-right {
 	position: absolute;
     right: 1.5rem;
     top: 1.5rem;
@@ -92,8 +105,17 @@ h2 {
 
 #game-letter,
 #game-round,
+#game-score-container,
 #game-timer-container {
 	display: inline-block;
+}
+
+#game-message {
+    display: none;
+}
+
+#game-message > hr {
+    width: 50%;
 }
 
 #game-message.active {
@@ -101,6 +123,7 @@ h2 {
     background: rgba(0,0,0,.6);
     color: yellow;
     display: flex;
+    flex-direction: column;
     font-size: 1.5rem;
     height: 100%;
     justify-content: center;
@@ -109,7 +132,7 @@ h2 {
 }
 
 #game-setup-section {
-    padding-top: 6rem;
+    padding-top: 5rem;
 }
 
 #game-setup-section > div > #scattergories-logo {
@@ -123,6 +146,10 @@ h2 {
 	position: fixed;
 	bottom: 0;
 	width: 100%;
+}
+
+#next-round-link {
+    margin-top: 1rem;
 }
 
 #scattergories-logo {
