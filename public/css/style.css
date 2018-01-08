@@ -87,8 +87,27 @@ h2 {
     width: 49%;
 }
 
-.category-item > input {
-	width: 49%
+.category-input {
+    width: 100%;
+}
+
+.category-input-container {
+    display: inline-block;
+    position: relative;
+    width: 49%;
+}
+
+.category-input-message {
+    display: none;
+}
+
+.category-input-container > .category-input-message.active {
+    background: red;
+    color: white;
+    display: flex;
+    font-size: .8rem;
+    position: absolute;
+    width: 102%;
 }
 
 #game-details-container-left {
@@ -120,7 +139,7 @@ h2 {
 
 #game-message.active {
     align-items: center;
-    background: rgba(0,0,0,.6);
+    background: rgba(0,0,0,.7);
     color: yellow;
     display: flex;
     flex-direction: column;
@@ -129,6 +148,7 @@ h2 {
     justify-content: center;
     position: absolute;
     width: 100%;
+    z-index: 1;
 }
 
 #game-setup-section {
