@@ -2,7 +2,6 @@
 	'use strict';
 
 	var answerList = [];
-	var isGameOver = false;
 	var isReturnKeyHit = false;
 	var gameLetter = null;
 	var round = null;
@@ -14,7 +13,7 @@
 	function checkSpelling(el) {
 		var xhr = new XMLHttpRequest();
 
-		var value = el.value.toLowerCase();
+		var value = el.value.trim().toLowerCase();
 		var url = '/validate/' + value;
 
 		xhr.open('GET', url, true);
@@ -22,15 +21,10 @@
 		xhr.onreadystatechange = function() {
 			if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
 				var data = JSON.parse(xhr.responseText).data;
-
 				validateInputEl(el, !data.length);
 
 				if (!data.length) {
 					answerList.push(value);
-				}
-
-				if (isGameOver) {
-					endGame();
 				}
 			}
 		}
@@ -164,14 +158,13 @@
 
 		var timer = setInterval(function() {
 			timerCount -= 1;
-
 			gameTimer.textContent = timerCount;
 
 			if (timerCount === 0) {
 				clearInterval(timer);
 				toggleInputEls(true);
 
-				isGameOver = true;
+				endGame();
 			}
 		}, 1000);
 
