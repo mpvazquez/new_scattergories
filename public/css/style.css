@@ -79,12 +79,15 @@ h2 {
 
 .category-item {
 	margin: 1rem .5rem;
+    display: flex;
+    justify-content: space-between;
 }
 
 .category-item > label {
     display: inline-block;
+    padding-right: 1rem;
     text-align: right;
-    width: 49%;
+    width: 100%;
 }
 
 .category-input {
@@ -94,7 +97,7 @@ h2 {
 .category-input-container {
     display: inline-block;
     position: relative;
-    width: 49%;
+    width: 100%;
 }
 
 .category-input-message {
@@ -102,12 +105,13 @@ h2 {
 }
 
 .category-input-container > .category-input-message.active {
-    background: red;
-    color: white;
+    background: #ff0000;
+    color: #FFFFFF;
     display: flex;
-    font-size: .8rem;
+    font-size: .7rem;
+    padding-left: 2%;
     position: absolute;
-    width: 102%;
+    width: 100%;
 }
 
 #game-details-container-left {
