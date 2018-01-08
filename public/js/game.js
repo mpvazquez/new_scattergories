@@ -1,8 +1,9 @@
 (function() {
 	'use strict';
 
-	var activeReturnKey = false;
 	var answerList = [];
+	var isGameOver = false;
+	var isReturnKeyHit = false;
 	var gameLetter = null;
 	var round = null;
 
@@ -25,7 +26,11 @@
 				validateInputEl(el, !data.length);
 
 				if (!data.length) {
-					answerList.push(value)
+					answerList.push(value);
+				}
+
+				if (isGameOver) {
+					endGame();
 				}
 			}
 		}
@@ -34,10 +39,11 @@
 
 	function endGame() {
 		var gameMessageNode = document.getElementById('game-message');
-		var nextRoundHref = '/game/';
 		var nextRoundLink = document.getElementById('next-round-link');
 		var roundScoreNode = document.getElementById('round-score');
 		var totalScoreNode = document.getElementById('total-score');
+
+		var nextRoundHref = '/game/';
 		var totalScore = answerList.length;
 
 		if (typeof Storage !== undefined) {
@@ -87,8 +93,8 @@
 			var score = sessionStorage.getItem('score') || '0';
 
 			if (round === 1) {
-				sessionStorage.setItem('score', '0');
 				score = '0';
+				sessionStorage.setItem('score', score);
 			}
 
 			gameScore.textContent = score;
@@ -100,21 +106,21 @@
 
 		for (var i = 0; i < inputs.length; i++) {
 			inputs[i].addEventListener('blur', function(event) {
-				if (!activeReturnKey) {
+				if (!isReturnKeyHit) {
 					validateValue(event.currentTarget);
 				}
 			});
 
 			inputs[i].addEventListener('keydown', function(event) {
-				var enterKeyCode = event.keyCode === 13;
+				var returnKeyCode = event.keyCode === 13;
 
-				if (enterKeyCode) {
-					activeReturnKey = !activeReturnKey;
+				if (returnKeyCode) {
+					isReturnKeyHit = !isReturnKeyHit;
 					validateValue(event.currentTarget);
 
 					// select next input, if there is one
 					selectNextInput(event.currentTarget);
-					activeReturnKey = !activeReturnKey;
+					isReturnKeyHit = !isReturnKeyHit;
 				}
 			});
 		}
@@ -153,7 +159,7 @@
 
 		categoryContainer.classList.remove('blur-text');
 
-		toggleInputEls(inputs, false);
+		toggleInputEls(false);
 		timerButton.disabled = true;
 
 		var timer = setInterval(function() {
@@ -163,10 +169,9 @@
 
 			if (timerCount === 0) {
 				clearInterval(timer);
+				toggleInputEls(true);
 
-				toggleInputEls(inputs, true);
-
-				endGame();
+				isGameOver = true;
 			}
 		}, 1000);
 
@@ -174,7 +179,7 @@
 		firstInput.focus();
 	}
 
-	function toggleInputEls(inputs, boolean) {
+	function toggleInputEls(boolean) {
 		for (var i = 0; i < inputs.length; i++) {
 			inputs[i].disabled = boolean;
 		}
