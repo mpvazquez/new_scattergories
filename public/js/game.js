@@ -1,10 +1,11 @@
 (function() {
 	'use strict';
 
-	var answerList = [];
-	var isReturnKeyHit = false;
-	var gameLetter = null;
-	var round = null;
+	var round = {
+		answers: [],
+		gameLetter: null,
+		number: null
+	}
 
 	var inputs;
 	var rollButton;
@@ -24,7 +25,7 @@
 				validateInputEl(el, !data.length);
 
 				if (!data.length) {
-					answerList.push(value);
+					round.answers.push(value);
 				}
 			}
 		}
@@ -38,7 +39,7 @@
 		var totalScoreNode = document.getElementById('total-score');
 
 		var nextRoundHref = '/game/';
-		var totalScore = answerList.length;
+		var totalScore = round.answers.length;
 
 		if (typeof Storage !== undefined) {
 			var pastScore = sessionStorage.getItem('score');
@@ -61,7 +62,7 @@
 		gameMessageNode.classList = 'active';
 		nextRoundLink.setAttribute('href', nextRoundHref);
 
-		roundScoreNode.textContent = answerList.length;
+		roundScoreNode.textContent = round.answers.length;
 		totalScoreNode.textContent = totalScore;
 	}
 
@@ -81,7 +82,7 @@
 		rollButton = document.getElementById('roll-die-button');
 		timerButton = document.getElementById('timer-button');
 
-		round = Number(document.getElementById('game-round').dataset.round);
+		round.number = Number(document.getElementById('game-round').dataset.round);
 
 		if (typeof Storage !== undefined) {
 			var score = sessionStorage.getItem('score') || '0';
@@ -100,21 +101,14 @@
 
 		for (var i = 0; i < inputs.length; i++) {
 			inputs[i].addEventListener('blur', function(event) {
-				if (!isReturnKeyHit) {
-					validateValue(event.currentTarget);
-				}
+				validateValue(event.currentTarget);
 			});
 
 			inputs[i].addEventListener('keydown', function(event) {
 				var returnKeyCode = event.keyCode === 13;
 
 				if (returnKeyCode) {
-					isReturnKeyHit = !isReturnKeyHit;
-					validateValue(event.currentTarget);
-
-					// select next input, if there is one
 					selectNextInput(event.currentTarget);
-					isReturnKeyHit = !isReturnKeyHit;
 				}
 			});
 		}
@@ -132,9 +126,9 @@
 		var gameDetailsRight = document.getElementById('game-details-container-right');
 		var letterContainer = document.getElementById('game-letter');
 
-		gameLetter = alphabet.charAt(randomNumber);
+		round.gameLetter = alphabet.charAt(randomNumber);
 
-		var gameLetterMessage = 'Letter: ' + gameLetter.toUpperCase();
+		var gameLetterMessage = 'Letter: ' + round.gameLetter.toUpperCase();
 
 		gameDetailsRight.classList.add('active-game-letter');
 
@@ -192,8 +186,8 @@
 		var value = el.value.trim().toLowerCase();
 
 		var isValid = value
-			&& value[0] === gameLetter.toLowerCase()
-			&& !answerList.includes(value)
+			&& value[0] === round.gameLetter.toLowerCase()
+			&& !round.answers.includes(value)
 			&& value.length > 1;
 
 		if (isValid) {
