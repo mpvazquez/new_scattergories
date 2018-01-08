@@ -19,7 +19,7 @@
 		empty: 'Your answer cannot be left blank',
 		length: 'Your answer must be at least two letters or longer',
 		letter: 'Your answer must begin with this round\'s letter',
-		spell: 'Your answer must be spelled correctly',
+		misspell: 'Your answer must be spelled correctly',
 		default: 'Your answer is accepted!'
 	}
 
@@ -33,15 +33,10 @@
 			if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
 				var data = JSON.parse(xhr.responseText).data;
 				var isValid = !data.length;
-				var errorType = isValid ? 'default' : 'spell';
-				var pointValue = 0;
-
-				if (value.split(' ').length > 1) {
-					pointValue += scoreAlliteration(value);
-				}
+				var errorType = isValid ? 'default' : 'misspell';
+				var pointValue = scorePoints(value);
 
 				if (isValid) {
-					pointValue++;
 					round.answers.push(value);
 				}
 
@@ -99,12 +94,12 @@
 		}
 	}
 
-	function scoreAlliteration(value) {
+	function scorePoints(value) {
 		var splitValue = value.toLowerCase().split(' ');
 		var score = 0;
 
-		for(var i = 1; i < splitValue.length; i++) {
-			if (splitValue[0][0] === splitValue[i][0]) {
+		for(var i = 0; i < splitValue.length; i++) {
+			if (round.gameLetter === splitValue[i][0]) {
 				score++;
 			}
 		}
