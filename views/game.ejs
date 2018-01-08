@@ -50,7 +50,16 @@
 			<% categoryList.forEach(function(category, index) {%>
 			<div class="category-item">
 				<label id="category-item-<%= index %>"><%= category %></label>
-				<input class="category-input" data-category="<%= index %>" id="category-input-<%= index %>" disabled placeholder=" Answer Here" spellcheck="true" type="text" />
+				<div class="category-input-container">
+					<input class="category-input"
+						data-index="<%= index %>"
+						disabled="true"
+						id="category-input-<%= index %>"
+						placeholder=" Answer Here"
+						spellcheck="true"
+						type="text" />
+					<div class="category-input-message" id="category-input-message-<%= index %>"></div>
+				</div>
 			</div>
 			<% }); %>
 		</section>
