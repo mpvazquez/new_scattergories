@@ -34,7 +34,10 @@ button[disabled] {
 
 footer {
 	background: rgba(0,0,0,.15);
-	padding: .2rem;
+    bottom: 0;
+    padding: .2rem;
+    position: fixed;
+    width: 100%;
 }
 
 footer a {
@@ -61,9 +64,9 @@ h2 {
 }
 
 .active-game-letter > #game-letter,
+#game-round,
 #game-score-container,
-#game-timer-container,
-#game-round {
+#game-timer-container {
 	background: #ffffff;
     padding: 3px;
     -webkit-border-radius: 5px;
@@ -89,6 +92,7 @@ h2 {
 }
 
 .category-input {
+    border: 1px solid #F5F5F5;
     width: 100%;
 }
 
@@ -161,12 +165,6 @@ h2 {
     position: relative;
     top: auto;
     width: inherit;
-}
-
-#index-footer {
-	position: fixed;
-	bottom: 0;
-	width: 100%;
 }
 
 #next-round-link {
