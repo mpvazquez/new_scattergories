@@ -15,7 +15,7 @@
 
 	var ERROR_MESSAGES = {
 		default: 'Your answer is valid!',
-		duplicate: 'Your answer cannot be used twice this round',
+		duplicate: 'Your answer was already used this round',
 		empty: 'Your answer cannot be left blank',
 		length: 'Your answer must be at least two letters or longer',
 		letter: 'Your answer must begin with this round\'s letter',
@@ -38,7 +38,7 @@
 		var roundScoreNode = document.getElementById('round-score');
 		var totalScoreNode = document.getElementById('total-score');
 
-		var nextRoundHref = '/game/';
+		var nextHref = '/game/';
 		var totalScore = scoreTotalPoints();
 
 		if (typeof Storage !== undefined) {
@@ -48,19 +48,19 @@
 		}
 
 		if (round.number < 3) {
-			nextRoundHref += (round.number + 1);
+			nextHref += (round.number + 1);
 		} else {
-			var nextChildButton = document.getElementById('next-round-button');
+			var nextButton = document.getElementById('next-round-button');
 
-			nextChildButton.textContent = "New Game";
-			nextRoundHref += 1;
+			nextButton.textContent = "New Game";
+			nextHref += 1;
 			if (typeof Storage !== undefined) {
 				sessionStorage.removeItem('score');
 			}
 		}
 
-		gameMessageNode.classList = 'active';
-		nextRoundLink.setAttribute('href', nextRoundHref);
+		gameMessageNode.classList.add('active');
+		nextRoundLink.setAttribute('href', nextHref);
 
 		roundScoreNode.textContent = scoreTotalPoints();
 		totalScoreNode.textContent = totalScore;
@@ -95,9 +95,8 @@
 		return score;
 	}
 
-	function spellCheckAPI(el) {
+	function spellCheckAPI(value) {
 		return new Promise(function(resolve, reject) {
-			var value = el.value.trim().toLowerCase();
 			var url = '/validate/' + value;
 
 			xhr.open('GET', url, true);
@@ -112,8 +111,6 @@
 	}
 
 	function startGame() {
-		var gameScore = document.getElementById('game-score');
-
 		inputs = document.getElementsByClassName('category-input');
 		rollButton = document.getElementById('roll-die-button');
 		timerButton = document.getElementById('timer-button');
@@ -121,6 +118,7 @@
 		round.number = Number(document.getElementById('game-round').dataset.round);
 
 		if (typeof Storage !== undefined) {
+			var gameScore = document.getElementById('game-score');
 			var score = sessionStorage.getItem('score') || '0';
 
 			if (round.number === 1) {
@@ -137,7 +135,7 @@
 
 		for (var i = 0; i < inputs.length; i++) {
 			inputs[i].addEventListener('blur', function(event) {
-				validateValue(event.currentTarget);
+				validateInput(event.currentTarget);
 			});
 
 			inputs[i].addEventListener('keydown', function(event) {
@@ -237,7 +235,7 @@
 		round.answers.push(inputData);
 	}
 
-	async function validateValue(el) {
+	async function validateInput(el) {
 		var value = el.value.trim().toLowerCase();
 		var errorType = 'default';
 		var pointValue = 0;
@@ -255,7 +253,7 @@
 		if (isEmpty) errorType = 'empty';
 
 		if (isValid) {
-			var apiRepsonse = await spellCheckAPI(el);
+			var apiRepsonse = await spellCheckAPI(value);
 
 			if (!apiRepsonse.length) {
 				pointValue += scoreValuePoints(value);
