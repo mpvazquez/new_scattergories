@@ -99,6 +99,8 @@
 
 		if (nextId < 12) {
 			document.getElementById(idSelector).focus();
+		} else {
+			document.activeElement.blur();
 		}
 	}
 
