@@ -4,7 +4,7 @@
 	var xhr = new XMLHttpRequest();
 
 	var round = {
-		answers: [],	
+		answers: [],
 		gameLetter: null,
 		number: null
 	}
@@ -14,7 +14,7 @@
 	var timerButton;
 
 	var ERROR_MESSAGES = {
-		default: 'Your answer is accepted!',
+		default: 'Your answer is valid!',
 		duplicate: 'Your answer cannot be used twice this round',
 		empty: 'Your answer cannot be left blank',
 		length: 'Your answer must be at least two letters or longer',
@@ -30,36 +30,6 @@
 			}
 		}
 		return isDuplicate;
-	}
-
-	function checkSpellingAPI(el) {
-		var value = el.value.trim().toLowerCase();
-		var url = '/validate/' + value;
-
-		xhr.open('GET', url, true);
-		xhr.responseType = 'text';
-		xhr.onreadystatechange = function() {
-			if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-				var data = JSON.parse(xhr.responseText).data;
-				var errorType = 'spell';
-				var isValid = !data.length;
-				var pointValue = 0;
-
-				if (isValid) {
-					errorType = 'default';
-					pointValue += scoreValuePoints(value);
-				}
-
-				updateInputEl(el, {
-					index: Number(el.dataset.index),
-					isValid: isValid,
-					errorType: errorType,
-					pointValue: pointValue,
-					value: value
-				});
-			}
-		};
-		xhr.send();
 	}
 
 	function endGame() {
@@ -125,6 +95,22 @@
 		return score;
 	}
 
+	function spellCheckAPI(el) {
+		return new Promise(function(resolve, reject) {
+			var value = el.value.trim().toLowerCase();
+			var url = '/validate/' + value;
+
+			xhr.open('GET', url, true);
+			xhr.responseType = 'text';
+			xhr.onreadystatechange = function() {
+				if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+					return resolve(JSON.parse(xhr.responseText).data);
+				}
+			};
+			xhr.send();
+		});
+	}
+
 	function startGame() {
 		var gameScore = document.getElementById('game-score');
 
@@ -151,12 +137,11 @@
 
 		for (var i = 0; i < inputs.length; i++) {
 			inputs[i].addEventListener('blur', function(event) {
-					validateValue(event.currentTarget);
+				validateValue(event.currentTarget);
 			});
 
 			inputs[i].addEventListener('keydown', function(event) {
 				var returnKeyCode = event.keyCode === 13;
-
 				if (returnKeyCode) {
 					selectNextInput(event.currentTarget);
 				}
@@ -237,7 +222,6 @@
 		el.style['border-color'] = color;
 
 		updateRoundInfo(inputData);
-		console.log(round)
 	}
 
 	function updateRoundInfo(inputData) {
@@ -253,9 +237,10 @@
 		round.answers.push(inputData);
 	}
 
-	function validateValue(el) {
+	async function validateValue(el) {
 		var value = el.value.trim().toLowerCase();
-		var errorType = 'accepted';
+		var errorType = 'default';
+		var pointValue = 0;
 
 		var isDuplicate = checkDuplicates(value);
 		var isEmpty = !value;
@@ -270,16 +255,23 @@
 		if (isEmpty) errorType = 'empty';
 
 		if (isValid) {
-			checkSpellingAPI(el);
-		} else {
-			updateInputEl(el, {
-				index: Number(el.dataset.index),
-				isValid: isValid,
-				errorType: errorType,
-				pointValue: 0,
-				value: value
-			});
+			var apiRepsonse = await spellCheckAPI(el);
+
+			if (!apiRepsonse.length) {
+				pointValue += scoreValuePoints(value);
+			} else {
+				errorType = 'spell';
+				isValid = true;
+			}
 		}
+
+		updateInputEl(el, {
+			index: Number(el.dataset.index),
+			isValid: isValid,
+			errorType: errorType,
+			pointValue: pointValue,
+			value: value
+		});
 	}
 
 	document.addEventListener("DOMContentLoaded", startGame);
