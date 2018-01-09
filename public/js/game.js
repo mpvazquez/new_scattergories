@@ -93,6 +93,35 @@
 		totalScoreNode.textContent = totalScore;
 	}
 
+	function getLetter() {
+		// excludes the letters: "q", "u", "v", "x", and "z"
+		var alphabet = 'abcdefghijklmnoprstwy';
+
+		if (typeof Storage !== undefined) {
+			var usedLetters = sessionStorage.getItem('letters') || [];
+
+			if (typeof usedLetters === 'string') {
+				usedLetters = JSON.parse(usedLetters);
+			}
+
+			if (usedLetters.length) {
+				alphabet = alphabet.split('');
+
+				for (var i = 0; i < usedLetters.length; i++) {
+					if (alphabet.includes(usedLetters[i])) {
+						var indexOf = alphabet.indexOf(usedLetters[i]);
+						alphabet.splice(indexOf, 1);
+					}
+				}
+				alphabet = alphabet.join('');
+			}
+		}
+
+		var randomIndex = Math.floor(Math.random() * alphabet.length);
+
+		return alphabet.charAt(randomIndex);
+	}
+
 	function selectNextInput(el) {
 		var nextId = Number(el.dataset.index) + 1;
 		var idSelector = 'category-input-' + nextId;
@@ -172,31 +201,9 @@
 	function startRoll(event) {
 		event.preventDefault();
 
-		var alphabet = 'abcdefghijklmnopqrstuvwyz';
 		var letterContainer = document.getElementById('game-letter');
-		var randomIndex = Math.floor(Math.random() * alphabet.length);
 
-		if (typeof Storage !== undefined) {
-			var usedLetters = sessionStorage.getItem('letters') || [];
-
-			if (typeof usedLetters === 'string') {
-				usedLetters = JSON.parse(usedLetters);
-			}
-
-			if (usedLetters.length) {
-				alphabet = alphabet.split('');
-
-				for (var i = 0; i < usedLetters.length; i++) {
-					if (alphabet.includes(usedLetters[i])) {
-						var indexOf = alphabet.indexOf(usedLetters[i]);
-						alphabet.splice(indexOf, 1);
-					}
-				}
-				alphabet = alphabet.join('')
-			}
-		}
-
-		round.gameLetter = alphabet.charAt(randomIndex);
+		round.gameLetter = getLetter();
 
 		letterContainer.classList.add('active');
 		letterContainer.textContent = 'Letter: ' + round.gameLetter.toUpperCase();
@@ -225,7 +232,8 @@
 				clearInterval(timer);
 				toggleDisabledInputs(true);
 
-				endGame();
+				document.activeElement.blur();
+				setTimeout(endGame, 50);
 			}
 		}, 1000);
 
