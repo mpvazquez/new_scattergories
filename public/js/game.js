@@ -258,7 +258,7 @@
 				pointValue += scoreValuePoints(value);
 			} else {
 				errorType = 'spell';
-				isValid = true;
+				isValid = false;
 			}
 		}
 
