@@ -65,8 +65,13 @@
 
 		if (typeof Storage !== undefined) {
 			var pastScore = sessionStorage.getItem('score');
+			var usedLetters = JSON.parse(sessionStorage.getItem('letters')) || [];
+
 			totalScore += Number(pastScore);
 			sessionStorage.setItem('score', totalScore);
+
+			usedLetters.push(round.gameLetter);
+			sessionStorage.setItem('letters', JSON.stringify(usedLetters));
 		}
 
 		if (round.number < 3) {
@@ -77,7 +82,7 @@
 			nextButton.textContent = "New Game";
 			nextHref += 1;
 			if (typeof Storage !== undefined) {
-				sessionStorage.removeItem('score');
+				sessionStorage.clear();
 			}
 		}
 
@@ -166,15 +171,33 @@
 		event.preventDefault();
 
 		var alphabet = 'abcdefghijklmnopqrstuvwyz';
-		var randomNumber = Math.floor(Math.random() * alphabet.length);
 		var letterContainer = document.getElementById('game-letter');
+		var randomIndex = Math.floor(Math.random() * alphabet.length);
 
-		round.gameLetter = alphabet.charAt(randomNumber);
+		if (typeof Storage !== undefined) {
+			var usedLetters = sessionStorage.getItem('letters') || [];
 
-		var gameLetterMessage = 'Letter: ' + round.gameLetter.toUpperCase();
+			if (typeof usedLetters === 'string') {
+				usedLetters = JSON.parse(usedLetters);
+			}
+
+			if (usedLetters.length) {
+				alphabet = alphabet.split('');
+
+				for (var i = 0; i < usedLetters.length; i++) {
+					if (alphabet.includes(usedLetters[i])) {
+						var indexOf = alphabet.indexOf(usedLetters[i]);
+						alphabet.splice(indexOf, 1);
+					}
+				}
+				alphabet = alphabet.join('')
+			}
+		}
+
+		round.gameLetter = alphabet.charAt(randomIndex);
 
 		letterContainer.classList.add('active');
-		letterContainer.textContent = gameLetterMessage;
+		letterContainer.textContent = 'Letter: ' + round.gameLetter.toUpperCase();
 		rollButton.disabled = true;
 		timerButton.disabled = false;
 	}
