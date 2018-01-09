@@ -156,16 +156,14 @@
 
 		var alphabet = 'abcdefghijklmnopqrstuvwyz';
 		var randomNumber = Math.floor(Math.random() * alphabet.length);
-		var gameDetailsRight = document.getElementById('game-details-container-right');
 		var letterContainer = document.getElementById('game-letter');
 
 		round.gameLetter = alphabet.charAt(randomNumber);
 
 		var gameLetterMessage = 'Letter: ' + round.gameLetter.toUpperCase();
 
-		gameDetailsRight.classList.add('active-game-letter');
-
-		letterContainer.appendChild(document.createTextNode(gameLetterMessage));
+		letterContainer.classList.add('active');
+		letterContainer.textContent = gameLetterMessage;
 		rollButton.disabled = true;
 		timerButton.disabled = false;
 	}
