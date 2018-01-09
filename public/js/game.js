@@ -236,9 +236,21 @@
 		messageEl.textContent = ERROR_MESSAGES[inputData.errorType];
 		el.style['border-color'] = color;
 
-		round.answers.push(inputData);
-
+		updateRoundInfo(inputData);
 		console.log(round)
+	}
+
+	function updateRoundInfo(inputData) {
+		var currentIndex = inputData.index;
+
+		for (var i = 0; i < round.answers.length; i++) {
+			if (round.answers[i].index === currentIndex) {
+				round.answers[currentIndex] = inputData;
+				return;
+			}
+		}
+		
+		round.answers.push(inputData);
 	}
 
 	function validateValue(el) {
