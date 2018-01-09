@@ -22,10 +22,10 @@
 		spell: 'Your answer must be spelled correctly'
 	}
 
-	function checkDuplicates(value) {
+	function checkDuplicates(value, index) {
 		var isDuplicate = false;
 		for (var i = 0; i < round.answers.length; i++) {
-			if (round.answers[i].value === value) {
+			if (round.answers[i].value === value && i !== index) {
 				return true;
 			}
 		}
@@ -234,11 +234,12 @@
 	}
 
 	async function validateInput(el) {
+		var index = Number(el.dataset.index);
 		var value = el.value.trim().toLowerCase();
 		var errorType = 'default';
 		var pointValue = 0;
 
-		var isDuplicate = checkDuplicates(value);
+		var isDuplicate = checkDuplicates(value, index);
 		var isEmpty = !value;
 		var isValidLetter = !isEmpty && value[0] === round.gameLetter.toLowerCase();
 		var isValidLength = !isEmpty && value.length > 1;
@@ -262,7 +263,7 @@
 		}
 
 		updateInputEl(el, {
-			index: Number(el.dataset.index),
+			index: index,
 			isValid: isValid,
 			errorType: errorType,
 			pointValue: pointValue,
