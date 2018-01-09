@@ -3,6 +3,15 @@
 
 	var xhr = new XMLHttpRequest();
 
+	var ANSWER_MESSAGES = {
+		default: 'Your answer is valid!',
+		duplicate: 'Your answer was already used this round',
+		empty: 'Your answer cannot be left blank',
+		length: 'Your answer must be at least two letters or longer',
+		letter: 'Your answer must begin with this round\'s letter',
+		spell: 'Your answer must be spelled correctly'
+	}
+
 	var round = {
 		answers: [],
 		gameLetter: null,
@@ -13,19 +22,32 @@
 	var rollButton;
 	var timerButton;
 
-	var ERROR_MESSAGES = {
-		default: 'Your answer is valid!',
-		duplicate: 'Your answer was already used this round',
-		empty: 'Your answer cannot be left blank',
-		length: 'Your answer must be at least two letters or longer',
-		letter: 'Your answer must begin with this round\'s letter',
-		spell: 'Your answer must be spelled correctly'
+	function calcInputPoints(value) {
+		var splitValue = value.split(' ');
+		var score = 0;
+
+		for(var i = 0; i < splitValue.length; i++) {
+			if (round.gameLetter === splitValue[i][0]) {
+				score++;
+			}
+		}
+		return score;
+	}
+	
+	function calcRoundPoints() {
+		var points = 0;
+
+		for (var i = 0; i < round.answers.length; i++) {
+			points += round.answers[i].points;
+		}
+		return points;
 	}
 
-	function checkDuplicates(value, index) {
+	function checkDuplicates(inputData) {
 		var isDuplicate = false;
+
 		for (var i = 0; i < round.answers.length; i++) {
-			if (round.answers[i].value === value && i !== index) {
+			if (round.answers[i].value === inputData.value && i !== inputData.index) {
 				return true;
 			}
 		}
@@ -39,7 +61,7 @@
 		var totalScoreNode = document.getElementById('total-score');
 
 		var nextHref = '/game/';
-		var totalScore = scoreTotalPoints();
+		var totalScore = calcRoundPoints();
 
 		if (typeof Storage !== undefined) {
 			var pastScore = sessionStorage.getItem('score');
@@ -62,7 +84,7 @@
 		gameMessageNode.classList.add('active');
 		nextRoundLink.setAttribute('href', nextHref);
 
-		roundScoreNode.textContent = scoreTotalPoints();
+		roundScoreNode.textContent = calcRoundPoints();
 		totalScoreNode.textContent = totalScore;
 	}
 
@@ -75,48 +97,7 @@
 		}
 	}
 
-	function scoreTotalPoints() {
-		var points = 0;
-		for (var i = 0; i < round.answers.length; i++) {
-			points += round.answers[i].pointValue;
-		}
-		return points;
-	}
-
-	function scoreValuePoints(value) {
-		var splitValue = value.toLowerCase().split(' ');
-		var score = 0;
-
-		for(var i = 0; i < splitValue.length; i++) {
-			if (round.gameLetter === splitValue[i][0]) {
-				score++;
-			}
-		}
-		return score;
-	}
-
-	function spellCheckAPI(value) {
-		return new Promise(function(resolve, reject) {
-			var url = '/validate/' + value;
-
-			xhr.open('GET', url, true);
-			xhr.responseType = 'text';
-			xhr.onreadystatechange = function() {
-				if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-					return resolve(JSON.parse(xhr.responseText).data);
-				}
-			};
-			xhr.send();
-		});
-	}
-
-	function startGame() {
-		inputs = document.getElementsByClassName('category-input');
-		rollButton = document.getElementById('roll-die-button');
-		timerButton = document.getElementById('timer-button');
-
-		round.number = Number(document.getElementById('game-round').dataset.round);
-
+	function setCurrentScore() {
 		if (typeof Storage !== undefined) {
 			var gameScore = document.getElementById('game-score');
 			var score = sessionStorage.getItem('score') || '0';
@@ -132,6 +113,15 @@
 
 			console.error('Sorry, local web storage is not supported on your browser!');
 		}
+	}
+
+	function setEventListeners() {
+		rollButton = document.getElementById('roll-die-button');
+		timerButton = document.getElementById('timer-button');
+
+		rollButton.addEventListener('click', startRoll);
+
+		timerButton.addEventListener('click', startTimer);
 
 		for (var i = 0; i < inputs.length; i++) {
 			inputs[i].addEventListener('blur', function(event) {
@@ -145,10 +135,31 @@
 				}
 			});
 		}
+	}
 
-		rollButton.addEventListener('click', startRoll);
+	function spellCheckAPI(value) {
+		return new Promise(function(resolve, reject) {
+			var url = '/validate/' + value;
 
-		timerButton.addEventListener('click', startTimer);
+			xhr.open('GET', url, true);
+			xhr.responseType = 'text';
+			xhr.onreadystatechange = function() {
+				if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+					resolve(JSON.parse(xhr.responseText).data);
+				}
+			};
+			xhr.send();
+		});
+	}
+
+	function startGame() {
+		inputs = document.getElementsByClassName('category-input');
+
+		round.number = Number(document.getElementById('game-round').dataset.round);
+
+		setCurrentScore();
+
+		setEventListeners();
 	}
 
 	function startRoll(event) {
@@ -214,7 +225,7 @@
 			messageEl.classList.add('active');
 		}
 
-		messageEl.textContent = ERROR_MESSAGES[inputData.errorType];
+		messageEl.textContent = ANSWER_MESSAGES[inputData.status];
 		el.style['border-color'] = color;
 
 		updateRoundInfo(inputData);
@@ -234,41 +245,38 @@
 	}
 
 	async function validateInput(el) {
-		var index = Number(el.dataset.index);
-		var value = el.value.trim().toLowerCase();
-		var errorType = 'default';
-		var pointValue = 0;
+		var inputData = {
+			index: Number(el.dataset.index),
+			isValid: false,
+			points: 0,
+			status: 'default',
+			value: el.value.trim().toLowerCase()
+		}
 
-		var isDuplicate = checkDuplicates(value, index);
-		var isEmpty = !value;
-		var isValidLetter = !isEmpty && value[0] === round.gameLetter.toLowerCase();
-		var isValidLength = !isEmpty && value.length > 1;
+		var isDuplicate = checkDuplicates(inputData);
+		var isEmpty = !inputData.value;
+		var isValidLetter = !isEmpty && inputData.value[0] === round.gameLetter.toLowerCase();
+		var isValidLength = !isEmpty && inputData.value.length > 1;
 
-		var isValid = !isEmpty && !isDuplicate && isValidLength && isValidLetter;
+		inputData.isValid = !isEmpty && !isDuplicate && isValidLength && isValidLetter;
 
-		if (!isValidLength) errorType = 'length';
-		if (!isValidLetter) errorType = 'letter';
-		if (isDuplicate) errorType = 'duplicate';
-		if (isEmpty) errorType = 'empty';
+		if (!isValidLength) inputData.status = 'length';
+		if (!isValidLetter) inputData.status = 'letter';
+		if (isDuplicate) inputData.status = 'duplicate';
+		if (isEmpty) inputData.status = 'empty';
 
-		if (isValid) {
-			var apiRepsonse = await spellCheckAPI(value);
+		if (inputData.isValid) {
+			var apiRepsonse = await spellCheckAPI(inputData.value);
 
 			if (!apiRepsonse.length) {
-				pointValue += scoreValuePoints(value);
+				inputData.points += calcInputPoints(inputData.value);
 			} else {
-				errorType = 'spell';
-				isValid = false;
+				inputData.status = 'spell';
+				inputData.isValid = !inputData.isValid;
 			}
 		}
 
-		updateInputEl(el, {
-			index: index,
-			isValid: isValid,
-			errorType: errorType,
-			pointValue: pointValue,
-			value: value
-		});
+		updateInputEl(el, inputData);
 	}
 
 	document.addEventListener("DOMContentLoaded", startGame);
