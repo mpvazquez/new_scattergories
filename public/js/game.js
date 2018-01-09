@@ -199,7 +199,7 @@
 	}
 
 	function startRoll(event) {
-		event.preventDefault();
+		// event.preventDefault();
 
 		var letterContainer = document.getElementById('game-letter');
 
@@ -212,7 +212,7 @@
 	}
 
 	function startTimer(event) {
-		event.preventDefault();
+		// event.preventDefault();
 
 		var categoryContainer = document.getElementById('category-container');
 		var firstInput = document.getElementById('category-input-0');
