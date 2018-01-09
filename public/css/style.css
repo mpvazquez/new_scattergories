@@ -224,7 +224,7 @@ h2 {
     }
 
     #game-details-container-left {
-        left: 4.2rem;
+        left: 3.5rem;
         top: 2.5rem;
     }
 
@@ -253,10 +253,15 @@ h2 {
     #game-round,
     #game-score-container,
     #game-timer-container {
-        padding: 1px;
+        padding: 0;
+        min-width: 4.5rem;
     }
 
     #game-name {
         padding: .2rem 0 2rem 0;
+    }
+
+    #scattergories-logo {
+        left: 0;
     }
 }
