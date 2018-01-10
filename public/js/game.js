@@ -152,11 +152,10 @@
 	}
 
 	function setEventListeners() {
-		rollButton = document.getElementById('roll-die-button');
+		rollButton = document.getElementById('roll-button');
 		timerButton = document.getElementById('timer-button');
 
 		rollButton.addEventListener('click', startRoll);
-
 		timerButton.addEventListener('click', startTimer);
 
 		for (var i = 0; i < inputs.length; i++) {
@@ -194,7 +193,6 @@
 		round.number = Number(document.getElementById('game-round').dataset.round);
 
 		setCurrentScore();
-
 		setEventListeners();
 	}
 
