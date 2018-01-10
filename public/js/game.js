@@ -156,7 +156,6 @@
 		timerButton = document.getElementById('timer-button');
 
 		rollButton.addEventListener('click', startRoll);
-		rollButton.addEventListener('touchstart', startRoll);
 
 		timerButton.addEventListener('click', startTimer);
 
